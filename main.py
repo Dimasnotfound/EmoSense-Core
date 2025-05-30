@@ -124,5 +124,10 @@ def get_cf_options():
     return jsonify(cf_options), 200
 
 
+@app.route("/")
+def hello_world():
+    return "<p>Ini Backend Emo-Sense!</p>"
+
+
 if __name__ == "__main__":
     app.run(debug=True)
