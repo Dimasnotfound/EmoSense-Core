@@ -1,0 +1,22 @@
+{
+    "D1": {"name": "Kesedihan", "expert_cf": 1.0},
+    "D2": {"name": "Pesimis", "expert_cf": 0.2},
+    "D3": {"name": "Perasaan Gagal", "expert_cf": 0.8},
+    "D4": {"name": "Kehilangan Kenikmatan", "expert_cf": 0.5},
+    "D5": {"name": "Perasaan Bersalah", "expert_cf": 0.4},
+    "D6": {"name": "Perasaan Dihukum", "expert_cf": 0.3},
+    "D7": {"name": "Pikiran Bunuh Diri", "expert_cf": 0.8},
+    "D8": {"name": "Gelisah", "expert_cf": 0.8},
+    "D9": {"name": "Kehilangan Ketertarikan", "expert_cf": 1.0},
+    "D10": {"name": "Keraguan", "expert_cf": 1.0},
+    "D11": {"name": "Kehilangan Energi", "expert_cf": 0.3},
+    "D12": {"name": "Perubahan Pola Tidur", "expert_cf": 0.8},
+    "D13": {"name": "Perubahan Nafsu Makan", "expert_cf": 1.0},
+    "D14": {"name": "Sulit Konsentrasi", "expert_cf": 0.4},
+    "D15": {"name": "Kelelahan", "expert_cf": 0.2},
+    "D16": {"name": "Perubahan Suasana Hati (Mood Swings)", "expert_cf": 0.9},
+    "D17": {"name": "Euforia Berlebihan", "expert_cf": 0.7},
+    "D18": {"name": "Mudah Marah (Iritabilitas)", "expert_cf": 0.6},
+    "D19": {"name": "Peningkatan Energi Berlebihan", "expert_cf": 0.7},
+    "D20": {"name": "Kecemasan Berlebihan", "expert_cf": 0.8}
+}

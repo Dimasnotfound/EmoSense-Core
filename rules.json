@@ -1,0 +1,27 @@
+{
+    "M1": {
+        "name": "Depresi Ringan",
+        "symptoms": ["D2", "D13"],
+        "rule_cf": 1.0
+    },
+    "M2": {
+        "name": "Depresi Sedang",
+        "symptoms": ["D1", "D3", "D5", "D6", "D8", "D10", "D11", "D12", "D14", "D15"],
+        "rule_cf": 1.0
+    },
+    "M3": {
+        "name": "Depresi Berat",
+        "symptoms": ["D4", "D7", "D9"],
+        "rule_cf": 1.0
+    },
+    "P01": {
+        "name": "Gangguan Suasana Hati (Kemungkinan Bipolar)",
+        "symptoms": ["D16", "D17", "D18", "D19"],
+        "rule_cf": 1.0
+    },
+    "A01": {
+        "name": "Gangguan Kecemasan",
+        "symptoms": ["D8", "D12", "D20"],
+        "rule_cf": 1.0
+    }
+}
