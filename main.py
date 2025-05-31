@@ -38,6 +38,8 @@ def calculate_rule_cf(symptom_cfs, rule):
 def forward_chaining(user_inputs):
     results = {}
     for rule_id, rule in rules.items():
+        if rule_id == "N1":
+            continue
         symptom_cfs = []
         for symptom_id in rule["symptoms"]:
             if symptom_id in user_inputs:
@@ -87,17 +89,28 @@ def diagnose():
 
     results = forward_chaining(user_inputs)
 
-    if not results:
+    THRESHOLD = 30.0
+    significant_diagnoses = {k: v for k, v in results.items() if v["cf"] >= THRESHOLD}
+
+    if not significant_diagnoses:
+        normal_result = {
+            "N1": {
+                "name": "Normal",
+                "cf": 100.0,
+            }
+        }
         return jsonify(
             {
-                "results": [],
-                "diagnosis": "Tidak ada diagnosis yang dapat ditentukan berdasarkan input Anda.",
+                "results": normal_result,
+                "diagnosis": "Normal",
+                "confidence": 100.0,
+                "message": "Tidak ada tanda-tanda depresi atau gangguan suasana hati. Tetap jaga kesehatan mental Anda dan konsultasikan dengan profesional jika merasa perlu.",
             }
         ), 200
 
     max_cf = -1
     diagnosis = None
-    for rule_id, result in results.items():
+    for rule_id, result in significant_diagnoses.items():
         if result["cf"] > max_cf:
             max_cf = result["cf"]
             diagnosis = result["name"]
@@ -106,6 +119,7 @@ def diagnose():
         "results": results,
         "diagnosis": diagnosis,
         "confidence": max_cf if diagnosis else None,
+        "message": "Hasil ini bukan pengganti diagnosis profesional. Jika Anda merasa perlu, konsultasikan dengan psikolog atau dokter.",
     }
     return jsonify(response), 200
 
@@ -126,7 +140,7 @@ def get_cf_options():
 
 @app.route("/")
 def hello_world():
-    return "<p>Ini Backend Emo-Sense!</p>"
+    return "<p>Ini Backend EmoSense!</p>"
 
 
 if __name__ == "__main__":
