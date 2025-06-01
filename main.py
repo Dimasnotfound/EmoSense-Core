@@ -1,10 +1,45 @@
 from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
 import json
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 
+# Configure SQLite database
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///emosense.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+# Initialize SQLAlchemy
+db = SQLAlchemy(app)
+
+
+# Define Diagnosis model
+class Diagnosis(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    user_inputs = db.Column(db.String(500), nullable=False)  # Store as JSON string
+    results = db.Column(db.String(500), nullable=False)  # Store as JSON string
+    diagnosis = db.Column(db.String(100), nullable=False)
+    confidence = db.Column(db.Float, nullable=True)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "created_at": self.created_at.isoformat(),
+            "user_inputs": json.loads(self.user_inputs),
+            "results": json.loads(self.results),
+            "diagnosis": self.diagnosis,
+            "confidence": self.confidence,
+        }
+
+
+# Create the database and tables
+with app.app_context():
+    db.create_all()
+
+
+# Load JSON files
 def load_json_file(filename):
     try:
         with open(filename, "r") as file:
@@ -20,6 +55,7 @@ cf_options = load_json_file("cf_options.json") or {}
 rules = load_json_file("rules.json") or {}
 
 
+# Forward chaining logic
 def calculate_single_cf(expert_cf, user_cf):
     return expert_cf * user_cf
 
@@ -99,6 +135,16 @@ def diagnose():
                 "cf": 100.0,
             }
         }
+        # Save to database
+        diagnosis_entry = Diagnosis(
+            user_inputs=json.dumps(user_inputs),
+            results=json.dumps(normal_result),
+            diagnosis="Normal",
+            confidence=100.0,
+        )
+        db.session.add(diagnosis_entry)
+        db.session.commit()
+
         return jsonify(
             {
                 "results": normal_result,
@@ -114,6 +160,16 @@ def diagnose():
         if result["cf"] > max_cf:
             max_cf = result["cf"]
             diagnosis = result["name"]
+
+    # Save to database
+    diagnosis_entry = Diagnosis(
+        user_inputs=json.dumps(user_inputs),
+        results=json.dumps(results),
+        diagnosis=diagnosis,
+        confidence=max_cf if diagnosis else None,
+    )
+    db.session.add(diagnosis_entry)
+    db.session.commit()
 
     response = {
         "results": results,
@@ -136,6 +192,12 @@ def get_cf_options():
     if not cf_options:
         return jsonify({"error": "Failed to load CF options file"}), 500
     return jsonify(cf_options), 200
+
+
+@app.route("/diagnoses", methods=["GET"])
+def get_diagnoses():
+    diagnoses = Diagnosis.query.all()
+    return jsonify([diagnosis.to_dict() for diagnosis in diagnoses]), 200
 
 
 @app.route("/")
