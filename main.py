@@ -3,8 +3,12 @@ from flask_sqlalchemy import SQLAlchemy
 import json
 import os
 from datetime import datetime
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+# Enable CORS
+CORS(app)
 
 # Configure SQLite database
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///emosense.db"
